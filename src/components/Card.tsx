@@ -13,7 +13,7 @@ const Card: FC<CardProps> = ({ card, onClick, index }) => {
     <div
       key={card.id}
       className={twMerge(
-        "w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer transition-transform duration-300",
+        "sm:w-24 sm:h-24 w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer transition-transform duration-300",
         card.isFlipped ? "rotate-y-180" : ""
       )}
       onClick={() => onClick(index)}
