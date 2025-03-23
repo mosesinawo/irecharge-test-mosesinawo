@@ -80,7 +80,7 @@ const GameOverview = () => {
           time={time}
           setTime={setTime}
         />
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 sm:gap-4 gap-3">
           {cards.map((card, index) => (
             <Card
               key={card.id}
