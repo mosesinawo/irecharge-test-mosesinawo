@@ -1,9 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import {
-  setCards,
-  resetSelectedCards
-} from "@/state/slices/gameSlice";
+import { setCards, resetSelectedCards } from "@/state/slices/gameSlice";
 import { useGameMetrics } from "@/hooks/useGameMetrics";
 import Initializer from "@/components/Initializer";
 import Card from "@/components/Card";
@@ -13,6 +10,8 @@ import useBeforeUnload from "@/hooks/useBeforeUnloaded";
 import { generateCards } from "@/services";
 import useCardClick from "@/hooks/useCardClick";
 import PrimaryButton from "@/components/PrimaryButton";
+import Timer from "@/components/Timer";
+// import { Dialog } from "@material-tailwind/react";
 
 const GameOverview = () => {
   const dispatch = useDispatch();
@@ -20,7 +19,11 @@ const GameOverview = () => {
     (state: RootState) => state.game
   );
   const [isInitializing, setIsInitializing] = useState(true);
+  const [time, setTime] = useState(0);
   const { clicks, bestScore, incrementClicks, resetGame } = useGameMetrics();
+//   const [showModal, setShowModal] = useState(false);
+//   const handleOpen = () => setShowModal(true);
+//   const handleClose = () => setShowModal(false);
 
   useBeforeUnload(isGameOngoing);
   useEffect(() => {
@@ -58,41 +61,60 @@ const GameOverview = () => {
   }, [selectedCards, cards, dispatch]);
 
   const handleCardClick = useCardClick(cards, selectedCards, incrementClicks);
+  const handleResetGame = () => {
+    resetGame();
+    setTime(0);
+    // handleClose();
+  };
   if (isInitializing) {
     return <Initializer onComplete={() => setIsInitializing(false)} />;
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
-      <h1 className="text-2xl font-bold">Memory Matching Game</h1>
-      <div className="grid sm:grid-cols-4 grid-cols-3 gap-4">
-        {cards.map((card, index) => (
-          <Card
-            key={card.id}
-            card={card}
-            index={index}
-            onClick={() => handleCardClick(index)}
-          />
-        ))}
-      </div>
-      <p className="text-lg">Clicks: {clicks}</p>
-      {cards.length && cards.every((card) => card.isMatched) && (
-        <div className="mt-4 p-4 bg-green-100 border border-green-400 rounded-lg">
-          <h2 className="text-xl font-semibold">Game Over!</h2>
-          <p>Total Clicks: {clicks}</p>
-          {clicks === bestScore && (
-            <p className="font-bold text-green-600">New Best Score!</p>
-          )}
+    <div>
+      <div className="flex flex-col items-center gap-4 p-4">
+        <h1 className="text-2xl font-bold">Memory Matching Game</h1>
+        <Timer
+          isGameRunning={isGameOngoing}
+          onTimeUpdate={(time) => console.log(`Time: ${time}s`)}
+          time={time}
+          setTime={setTime}
+        />
+        <div className="grid sm:grid-cols-4 grid-cols-3 gap-4">
+          {cards.map((card, index) => (
+            <Card
+              key={card.id}
+              card={card}
+              index={index}
+              onClick={() => handleCardClick(index)}
+            />
+          ))}
         </div>
-      )}
-      <PrimaryButton type="button" onClick={resetGame}>
-        RESTART GAME
-      </PrimaryButton>
+        <p className="text-lg">Clicks: {clicks}</p>
+        {cards.length && cards.every((card) => card.isMatched) && (
+          <div className="mt-4 p-4 bg-green-100 border border-green-400 rounded-lg">
+            <h2 className="text-xl font-semibold">Game Over!</h2>
+            <p>Total Clicks: {clicks}</p>
+            {clicks === bestScore && (
+              <p className="font-bold text-green-600">New Best Score!</p>
+            )}
+          </div>
+        )}
+        <PrimaryButton type="button" onClick={handleResetGame}>
+          RESTART GAME
+        </PrimaryButton>
+      </div>
+      {/* <Dialog open={showModal} handler={handleClose} size="sm" className="">
+        <div className="text-center bg-white w-[500px]">
+          <h2 className="text-xl font-bold">Are you sure you want to reset?</h2>
+          <div className="flex gap-4">
+            <PrimaryButton onClick={handleResetGame}>Yes</PrimaryButton>
+            <PrimaryButton onClick={handleClose}>No</PrimaryButton>
+          </div>
+        </div>
+      </Dialog> */}
     </div>
   );
 };
 
 export default GameOverview;
-
-const shuffleArray = <T,>(array: T[]): T[] =>
-  [...array].sort(() => Math.random() - 0.5);

@@ -3,7 +3,7 @@ import React, { FC } from "react";
 interface PrimaryButtonProps {
   children: React.ReactNode;
   onClick: () => void;
-  type: string;
+  type?: string;
 }
 
 const PrimaryButton: FC<PrimaryButtonProps> = ({ children, onClick, type = 'button' }) => {

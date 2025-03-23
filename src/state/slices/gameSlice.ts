@@ -1,3 +1,4 @@
+import { shuffleArray } from "@/services";
 import { ICard } from "@/types/card.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -41,11 +42,16 @@ const gameSlice = createSlice({
       state.isGameOngoing = action.payload;
     },
     resetGame: (state) => {
-      state.cards = [];
+      state.cards = shuffleArray(state.cards.map((card) => ({
+        ...card,
+        isFlipped: false,
+        isMatched: false,
+      })));
       state.selectedCards = [];
       state.clicks = 0;
-      state.isGameOngoing = false;
+      state.isGameOngoing = true;
     },
+
   },
 });
 

@@ -4,7 +4,7 @@ import { setCards, setGameStatus } from "@/state/slices/gameSlice";
 import { AppDispatch } from "@/state/store";
 import axios from "axios";
 
-const shuffleArray = <T,>(array: T[]): T[] => {
+export const shuffleArray = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
 
