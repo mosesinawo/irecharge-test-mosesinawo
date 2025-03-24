@@ -7,8 +7,9 @@ const useBeforeUnload = (isGameOngoing: boolean) => {
         event.preventDefault();
       }
     };
-
+    // Attach event listener when the component mounts
     window.addEventListener("beforeunload", handleBeforeUnload);
+     // Cleanup event listener when the component unmounts or dependency changes
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isGameOngoing]);
 };

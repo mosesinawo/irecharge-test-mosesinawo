@@ -1,9 +1,8 @@
-// import { AppDispatch } from "@state/redux/store";
-// import { setGameStatus, setCards } from "@/redux/gameSlice";
 import { setCards, setGameStatus } from "@/state/slices/gameSlice";
 import { AppDispatch } from "@/state/store";
 import axios from "axios";
 
+// Shuffles an array
 export const shuffleArray = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };

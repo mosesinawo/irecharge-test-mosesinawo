@@ -1,8 +1,22 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+Installation
 
-First, run the development server:
+Clone the repository:
+git clone https://github.com/mosesinawo/irecharge-test-mosesinawo.git
+cd irecharge-test-mosesinawo
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+Running the Development Server
+
+Start the development server:
 
 ```bash
 npm run dev
@@ -14,23 +28,19 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Start [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Memory matching game with interactive UI
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tracks number of clicks and best score
 
-## Learn More
+Encouragement messages based on performance
 
-To learn more about Next.js, take a look at the following resources:
+Responsive design
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If you encounter issues, try deleting node_modules and package-lock.json/yarn.lock and reinstalling dependencies:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+rm -rf node_modules package-lock.json
+npm install
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Ensure you're running the correct Node.js version.

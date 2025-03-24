@@ -3,7 +3,6 @@ import { ICard } from "@/types/card.types";
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 
-
 const useCardClick = (
   cards: ICard[],
   selectedCards: number[],
@@ -11,7 +10,9 @@ const useCardClick = (
 ) => {
   const dispatch = useDispatch();
 
-  return useCallback((index: number) => {
+  return useCallback(
+    (index: number) => {
+      // Prevent clicking if two cards are already selected, or the card is already flipped/matched
       if (
         selectedCards.length < 2 &&
         !cards[index].isFlipped &&
@@ -24,7 +25,10 @@ const useCardClick = (
             )
           )
         );
+        // Store the selected card index
         dispatch(selectCard(index));
+
+        // Increment the number of clicks
         incrementClicks();
       }
     },

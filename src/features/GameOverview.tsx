@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { setCards, resetSelectedCards } from "@/state/slices/gameSlice";
 import { useGameMetrics } from "@/hooks/useGameMetrics";
 import Initializer from "@/components/Initializer";
 import Card from "@/components/Card";
@@ -11,61 +10,46 @@ import { generateCards } from "@/services";
 import useCardClick from "@/hooks/useCardClick";
 import PrimaryButton from "@/components/PrimaryButton";
 import Timer from "@/components/Timer";
-// import { Dialog } from "@material-tailwind/react";
+import useMatchChecker from "@/hooks/useMatchChecker";
+import { useRouter } from 'next/navigation'
 
 const GameOverview = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { cards, selectedCards, isGameOngoing } = useSelector(
     (state: RootState) => state.game
   );
   const [isInitializing, setIsInitializing] = useState(true);
   const [time, setTime] = useState(0);
   const { clicks, bestScore, incrementClicks, resetGame } = useGameMetrics();
-//   const [showModal, setShowModal] = useState(false);
-//   const handleOpen = () => setShowModal(true);
-//   const handleClose = () => setShowModal(false);
 
+//   * Custom hook to prevent accidental page reloads or navigation 
+//  * when a game is ongoing.
   useBeforeUnload(isGameOngoing);
+
+  // * Custom hook to fetch the images
   useEffect(() => {
     generateCards(dispatch);
   }, [dispatch]);
 
-  useEffect(() => {
-    if (selectedCards.length === 2) {
-      setTimeout(() => {
-        const [first, second] = selectedCards;
-        if (cards[first].image === cards[second].image) {
-          dispatch(
-            setCards(
-              cards.map((card, i) =>
-                i === first || i === second
-                  ? { ...card, isMatched: true }
-                  : card
-              )
-            )
-          );
-        } else {
-          dispatch(
-            setCards(
-              cards.map((card, i) =>
-                i === first || i === second
-                  ? { ...card, isFlipped: false }
-                  : card
-              )
-            )
-          );
-        }
-        dispatch(resetSelectedCards());
-      }, 2000);
-    }
-  }, [selectedCards, cards, dispatch]);
+  // * Custom hook to check if selected cards match.
+  useMatchChecker(selectedCards, cards, dispatch);
 
+  // Custom hook to handle card click interactions.
   const handleCardClick = useCardClick(cards, selectedCards, incrementClicks);
   const handleResetGame = () => {
     resetGame();
     setTime(0);
-    // handleClose();
   };
+
+  useEffect(() => {
+    if (cards.length && cards.every((card) => card.isMatched)) {
+      setTimeout(() => {
+        router.push(`/results`);
+      }, 500);
+    }
+  }, [cards, clicks, bestScore, router]);
+
   if (isInitializing) {
     return <Initializer onComplete={() => setIsInitializing(false)} />;
   }
@@ -104,15 +88,6 @@ const GameOverview = () => {
           RESTART GAME
         </PrimaryButton>
       </div>
-      {/* <Dialog open={showModal} handler={handleClose} size="sm" className="">
-        <div className="text-center bg-white w-[500px]">
-          <h2 className="text-xl font-bold">Are you sure you want to reset?</h2>
-          <div className="flex gap-4">
-            <PrimaryButton onClick={handleResetGame}>Yes</PrimaryButton>
-            <PrimaryButton onClick={handleClose}>No</PrimaryButton>
-          </div>
-        </div>
-      </Dialog> */}
     </div>
   );
 };
