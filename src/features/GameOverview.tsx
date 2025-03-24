@@ -11,7 +11,8 @@ import useCardClick from "@/hooks/useCardClick";
 import PrimaryButton from "@/components/PrimaryButton";
 import Timer from "@/components/Timer";
 import useMatchChecker from "@/hooks/useMatchChecker";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
+import CustomDialog from "@/components/CustomDialog";
 
 const GameOverview = () => {
   const dispatch = useDispatch();
@@ -22,9 +23,10 @@ const GameOverview = () => {
   const [isInitializing, setIsInitializing] = useState(true);
   const [time, setTime] = useState(0);
   const { clicks, bestScore, incrementClicks, resetGame } = useGameMetrics();
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
-//   * Custom hook to prevent accidental page reloads or navigation 
-//  * when a game is ongoing.
+  //   * Custom hook to prevent accidental page reloads or navigation
+  //  * when a game is ongoing.
   useBeforeUnload(isGameOngoing);
 
   // * Custom hook to fetch the images
@@ -38,8 +40,10 @@ const GameOverview = () => {
   // Custom hook to handle card click interactions.
   const handleCardClick = useCardClick(cards, selectedCards, incrementClicks);
   const handleResetGame = () => {
+    console.log("i ran");
     resetGame();
     setTime(0);
+    setDialogOpen(false);
   };
 
   useEffect(() => {
@@ -60,7 +64,6 @@ const GameOverview = () => {
         <h1 className="text-2xl font-bold">Memory Matching Game</h1>
         <Timer
           isGameRunning={isGameOngoing}
-          onTimeUpdate={(time) => console.log(`Time: ${time}s`)}
           time={time}
           setTime={setTime}
         />
@@ -84,10 +87,32 @@ const GameOverview = () => {
             )}
           </div>
         )}
-        <PrimaryButton type="button" onClick={handleResetGame}>
+        <PrimaryButton type="button" onClick={() => setDialogOpen(true)}>
           RESTART GAME
         </PrimaryButton>
       </div>
+      <CustomDialog
+        isOpen={isDialogOpen}
+        title="Confirm Action"
+        message="Are you sure you want to restart game?"
+        onClose={() => setDialogOpen(false)}
+        actions={
+          <>
+            <button
+              onClick={() => setDialogOpen(false)}
+              className="px-4 py-2 bg-gray-300 rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleResetGame}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Confirm
+            </button>
+          </>
+        }
+      />
     </div>
   );
 };
